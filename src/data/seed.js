@@ -6,8 +6,8 @@ function isoDate(monthOffset = 0, day = 1) {
 }
 
 const DEMO_STATE = {
-  version: 1,
-  profile: { name: 'Marina', income: 7800, essentialCost: 3400, monthsGoal: 6, reserveAmount: 12600, payday: 5, closingDay: 25, completedLessons: ['primeiros-passos'], hasBusiness: false, proLabore: 0, profitDistribution: 0, onboarded: true },
+  version: 2,
+  profile: { name: 'Marina', email: '', income: 7800, essentialCost: 3400, monthsGoal: 6, reserveAmount: 12600, payday: 5, closingDay: 25, completedLessons: ['primeiros-passos'], hasBusiness: false, businessConnected: false, proLabore: 0, profitDistribution: 0, businessPersonalExpenses: 0, businessNetWorth: 0, monthlyInvestmentGoal: 1000, investmentTotalGoal: 100000, onboarded: true },
   transactions: [
     { id: 'tx-salario', type: 'income', description: 'Salário', amount: 7800, category: 'Renda', date: isoDate(0, 5), recurring: true },
     { id: 'tx-moradia', type: 'expense', description: 'Aluguel', amount: 1850, category: 'Moradia', date: isoDate(0, 6), recurring: true },
@@ -48,8 +48,9 @@ const DEMO_STATE = {
     { id: 'inv-cdb', name: 'CDB Liquidez Diária', institution: 'Banco Inter', category: 'Renda fixa', investedValue: 8000, currentValue: 8460, date: isoDate(-10, 8), returnRate: 5.75, note: 'Reserva complementar' },
     { id: 'inv-etf', name: 'ETF Brasil', institution: 'Corretora', category: 'Ações', investedValue: 3500, currentValue: 3820, date: isoDate(-8, 10), returnRate: 9.14, note: '' },
   ],
-  investmentProfile: { answers: {}, profile: 'equilibrado' },
-  atePagamento: { id: 'payday-plan', balance: 3150, nextPaymentDate: isoDate(1, 5), status: 'active', plannedItems: [{ id: 'planned-1', description: 'Contas restantes', amount: 980 }], safetyReserve: 600, expectedIncome: 7800 },
+  investmentProfile: { answers: {}, profile: 'equilibrado', tolerance: 0, capacity: 0, horizon: 0, reasons: [], priorities: [], updatedAt: null },
+  atePagamento: { id: 'payday-plan', balance: 3150, nextPaymentDate: isoDate(1, 5), status: 'active', plannedItems: [{ id: 'planned-1', description: 'Contas restantes', amount: 980 }], extraItems: [], paidItemIds: [], todaySpent: 0, createdAt: new Date().toISOString(), safetyReserve: 600, expectedIncome: 7800 },
+  settings: { aiEnabled: false, aiDisclosureAccepted: false },
 }
 
 export function createInitialState() {

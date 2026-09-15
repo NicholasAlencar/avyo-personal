@@ -32,11 +32,14 @@ export function FinanceProvider({ children, storage = globalThis.localStorage })
   })), [commit])
 
   const updateProfile = useCallback((patch) => commit((current) => ({ ...current, profile: { ...current.profile, ...patch } })), [commit])
+  const updateSettings = useCallback((patch) => commit((current) => ({ ...current, settings: { ...current.settings, ...patch } })), [commit])
+  const updateInvestmentProfile = useCallback((patch) => commit((current) => ({ ...current, investmentProfile: { ...current.investmentProfile, ...patch } })), [commit])
+  const updatePaydayPlan = useCallback((next) => commit((current) => ({ ...current, atePagamento: typeof next === 'function' ? next(current.atePagamento) : next })), [commit])
   const replaceState = useCallback((next) => commit(next), [commit])
   const resetDemo = useCallback(() => commit(createInitialState()), [commit])
   const clearAll = useCallback(() => commit(EMPTY_STATE), [commit])
 
-  const value = useMemo(() => ({ state, addRecord, updateRecord, removeRecord, updateProfile, replaceState, resetDemo, clearAll }), [state, addRecord, updateRecord, removeRecord, updateProfile, replaceState, resetDemo, clearAll])
+  const value = useMemo(() => ({ state, addRecord, updateRecord, removeRecord, updateProfile, updateSettings, updateInvestmentProfile, updatePaydayPlan, replaceState, resetDemo, clearAll }), [state, addRecord, updateRecord, removeRecord, updateProfile, updateSettings, updateInvestmentProfile, updatePaydayPlan, replaceState, resetDemo, clearAll])
   return <FinanceContext.Provider value={value}>{children}</FinanceContext.Provider>
 }
 
