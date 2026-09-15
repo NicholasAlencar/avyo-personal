@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  build: { chunkSizeWarningLimit: 800 },
+  build: { chunkSizeWarningLimit: 1000 },
   test: {
     environment: 'jsdom',
     setupFiles: './src/test/setup.js',
