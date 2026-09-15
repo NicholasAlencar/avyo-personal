@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap');
+@import "tailwindcss";
+
+:root { color-scheme: dark; --bg: #0A1020; --card: #111a2d; --cyan: #38d8e8; --font-heading: Outfit, sans-serif; --font-body: Inter, sans-serif; }
+* { box-sizing: border-box; }
+html { background: var(--bg); }
+body { margin: 0; min-width: 320px; min-height: 100vh; background: var(--bg); color: #f8fafc; font-family: var(--font-body); }
+button, input, select, textarea { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+.font-heading { font-family: var(--font-heading); }
+.avyo-card { border: 1px solid rgb(255 255 255 / .06); border-radius: 1rem; background: rgb(17 26 45 / .82); box-shadow: 0 8px 30px -12px rgb(0 0 0 / .6); backdrop-filter: blur(10px); }
+.text-gradient { background: linear-gradient(90deg,#5b82ff,#38d8e8); background-clip: text; color: transparent; }
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-thumb { background: rgb(148 163 184 / .2); border-radius: 999px; }
+@media (prefers-reduced-motion: reduce) { *,*::before,*::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+@media print { aside,header,nav,button,[data-no-print] { display: none !important; } main { margin: 0 !important; padding: 0 !important; } }
