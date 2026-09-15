@@ -5,7 +5,7 @@ import { AppLayout } from './AppLayout'
 
 test('marks the current navigation item and renders page content', () => {
   render(
-    <MemoryRouter initialEntries={['/transacoes']}>
+    <MemoryRouter initialEntries={['/movimentacoes/transacoes']}>
       <AppLayout><p>Conteúdo financeiro</p></AppLayout>
     </MemoryRouter>,
   )

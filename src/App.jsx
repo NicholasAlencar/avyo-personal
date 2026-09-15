@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AppLayout } from './components/avyo/AppLayout'
 import { OnboardingDialog } from './components/avyo/OnboardingDialog'
 import { ScrollToTop } from './components/avyo/ScrollToTop'
@@ -31,10 +31,13 @@ const NotFoundPage = page(() => import('./pages/NotFoundPage'), 'NotFoundPage')
 export function AppRoutes() {
   return <Suspense fallback={<div role="status" className="avyo-card p-6 text-sm text-slate-400">Carregando sua visão financeira…</div>}><Routes>
     <Route path="/" element={<HomePage />} />
-    <Route path="/transacoes" element={<TransactionsPage />} /><Route path="/cartoes" element={<CardsPage />} /><Route path="/parcelamentos" element={<InstallmentsPage />} /><Route path="/assinaturas" element={<SubscriptionsPage />} />
-    <Route path="/orcamento" element={<BudgetsPage />} /><Route path="/metas" element={<GoalsPage />} /><Route path="/reserva" element={<EmergencyReservePage />} /><Route path="/ate-pagamento" element={<UntilPaydayPage />} />
+    <Route path="/movimentacoes/transacoes" element={<TransactionsPage />} /><Route path="/movimentacoes/cartoes" element={<CardsPage />} /><Route path="/movimentacoes/parcelamentos" element={<InstallmentsPage />} /><Route path="/movimentacoes/assinaturas" element={<SubscriptionsPage />} />
+    <Route path="/planejamento/orcamento" element={<BudgetsPage />} /><Route path="/planejamento/metas" element={<GoalsPage />} /><Route path="/reserva" element={<EmergencyReservePage />} /><Route path="/ate-pagamento" element={<UntilPaydayPage />} />
     <Route path="/investimentos" element={<InvestmentsPage />} /><Route path="/patrimonio" element={<NetWorthPage />} /><Route path="/patrimonio/calculadora" element={<WealthCalculatorPage />} />
-    <Route path="/planejador" element={<PlannerPage />} /><Route path="/connect" element={<ConnectPage />} /><Route path="/escola" element={<SchoolPage />} /><Route path="/calculadoras" element={<CalculatorsPage />} /><Route path="/ajuda" element={<HelpPage />} /><Route path="/relatorio" element={<ReportPage />} /><Route path="/configuracoes" element={<SettingsPage />} />
+    <Route path="/planejador" element={<PlannerPage />} /><Route path="/connect" element={<ConnectPage />} /><Route path="/aprender/escola" element={<SchoolPage />} /><Route path="/aprender/calculadoras" element={<CalculatorsPage />} /><Route path="/aprender/ajuda" element={<HelpPage />} /><Route path="/relatorio" element={<ReportPage />} /><Route path="/configuracoes" element={<SettingsPage />} />
+    <Route path="/transacoes" element={<Navigate replace to="/movimentacoes/transacoes" />} /><Route path="/cartoes" element={<Navigate replace to="/movimentacoes/cartoes" />} /><Route path="/parcelamentos" element={<Navigate replace to="/movimentacoes/parcelamentos" />} /><Route path="/assinaturas" element={<Navigate replace to="/movimentacoes/assinaturas" />} />
+    <Route path="/orcamento" element={<Navigate replace to="/planejamento/orcamento" />} /><Route path="/metas" element={<Navigate replace to="/planejamento/metas" />} />
+    <Route path="/escola" element={<Navigate replace to="/aprender/escola" />} /><Route path="/calculadoras" element={<Navigate replace to="/aprender/calculadoras" />} /><Route path="/ajuda" element={<Navigate replace to="/aprender/ajuda" />} />
     <Route path="*" element={<NotFoundPage />} />
   </Routes></Suspense>
 }
