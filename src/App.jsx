@@ -14,7 +14,15 @@ import { UntilPaydayPage } from './pages/UntilPaydayPage'
 import { InvestmentsPage } from './pages/InvestmentsPage'
 import { NetWorthPage } from './pages/NetWorthPage'
 import { WealthCalculatorPage } from './pages/WealthCalculatorPage'
+import { PlannerPage } from './pages/PlannerPage'
+import { ConnectPage } from './pages/ConnectPage'
+import { SchoolPage } from './pages/SchoolPage'
+import { CalculatorsPage } from './pages/CalculatorsPage'
+import { HelpPage } from './pages/HelpPage'
+import { ReportPage } from './pages/ReportPage'
+import { SettingsPage } from './pages/SettingsPage'
+import { ToastProvider } from './components/ui/ToastProvider'
 
 export default function App() {
-  return <FinanceProvider><BrowserRouter><AppLayout><Routes><Route path="/" element={<HomePage />} /><Route path="/transacoes" element={<TransactionsPage />} /><Route path="/cartoes" element={<CardsPage />} /><Route path="/parcelamentos" element={<InstallmentsPage />} /><Route path="/assinaturas" element={<SubscriptionsPage />} /><Route path="/orcamento" element={<BudgetsPage />} /><Route path="/metas" element={<GoalsPage />} /><Route path="/reserva" element={<EmergencyReservePage />} /><Route path="/ate-pagamento" element={<UntilPaydayPage />} /><Route path="/investimentos" element={<InvestmentsPage />} /><Route path="/patrimonio" element={<NetWorthPage />} /><Route path="/patrimonio/calculadora" element={<WealthCalculatorPage />} /></Routes></AppLayout><OnboardingDialog /></BrowserRouter></FinanceProvider>
+  return <FinanceProvider><ToastProvider><BrowserRouter><AppLayout><Routes><Route path="/" element={<HomePage />} /><Route path="/transacoes" element={<TransactionsPage />} /><Route path="/cartoes" element={<CardsPage />} /><Route path="/parcelamentos" element={<InstallmentsPage />} /><Route path="/assinaturas" element={<SubscriptionsPage />} /><Route path="/orcamento" element={<BudgetsPage />} /><Route path="/metas" element={<GoalsPage />} /><Route path="/reserva" element={<EmergencyReservePage />} /><Route path="/ate-pagamento" element={<UntilPaydayPage />} /><Route path="/investimentos" element={<InvestmentsPage />} /><Route path="/patrimonio" element={<NetWorthPage />} /><Route path="/patrimonio/calculadora" element={<WealthCalculatorPage />} /><Route path="/planejador" element={<PlannerPage />} /><Route path="/connect" element={<ConnectPage />} /><Route path="/escola" element={<SchoolPage />} /><Route path="/calculadoras" element={<CalculatorsPage />} /><Route path="/ajuda" element={<HelpPage />} /><Route path="/relatorio" element={<ReportPage />} /><Route path="/configuracoes" element={<SettingsPage />} /></Routes></AppLayout><OnboardingDialog /></BrowserRouter></ToastProvider></FinanceProvider>
 }
