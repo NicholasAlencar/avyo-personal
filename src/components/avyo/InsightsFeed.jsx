@@ -1,0 +1,9 @@
+import { ArrowUpRight, CircleAlert, Lightbulb, ShieldCheck, Sparkles } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { Card } from '../ui/Card'
+
+const tones = { rose: ['bg-rose-400/10 text-rose-300 border-rose-400/15', CircleAlert], amber: ['bg-amber-400/10 text-amber-300 border-amber-400/15', Lightbulb], emerald: ['bg-emerald-400/10 text-emerald-300 border-emerald-400/15', ShieldCheck], cyan: ['bg-cyan-400/10 text-cyan-300 border-cyan-400/15', Sparkles], violet: ['bg-violet-400/10 text-violet-300 border-violet-400/15', Sparkles] }
+
+export function InsightsFeed({ insights }) {
+  return <section aria-label="Insights financeiros"><div className="mb-4 flex items-end justify-between"><div><p className="text-xs font-semibold uppercase tracking-[.18em] text-cyan-300">Leitura do momento</p><h2 className="mt-1 font-heading text-2xl font-bold">O que merece sua atenção</h2></div><span className="text-xs text-slate-500">{insights.length} sinais</span></div><div className="grid gap-4 md:grid-cols-2">{insights.map((item) => { const [className, Icon] = tones[item.tone] || tones.cyan; const content = <Card className="group h-full p-5 transition hover:-translate-y-0.5 hover:border-white/10"><div className="flex gap-4"><div className={`grid size-10 shrink-0 place-items-center rounded-xl border ${className}`}><Icon size={18} /></div><div className="min-w-0 flex-1"><h3 className="font-heading font-semibold text-white">{item.title}</h3><p className="mt-1 text-sm leading-relaxed text-slate-400">{item.text}</p></div>{item.to && <ArrowUpRight size={17} className="text-slate-600 transition group-hover:translate-x-0.5 group-hover:text-cyan-300" />}</div></Card>; return item.to ? <Link key={item.id} to={item.to}>{content}</Link> : <div key={item.id}>{content}</div> })}</div></section>
+}

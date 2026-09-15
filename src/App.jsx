@@ -1,7 +1,9 @@
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AppLayout } from './components/avyo/AppLayout'
+import { OnboardingDialog } from './components/avyo/OnboardingDialog'
 import { FinanceProvider } from './context/FinanceContext'
+import { HomePage } from './pages/HomePage'
 
 export default function App() {
-  return <FinanceProvider><BrowserRouter><AppLayout><h1 className="font-heading text-3xl font-bold">AVYO Personal</h1></AppLayout></BrowserRouter></FinanceProvider>
+  return <FinanceProvider><BrowserRouter><AppLayout><Routes><Route path="/" element={<HomePage />} /></Routes></AppLayout><OnboardingDialog /></BrowserRouter></FinanceProvider>
 }
