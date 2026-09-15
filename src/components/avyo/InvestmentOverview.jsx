@@ -1,0 +1,4 @@
+import { TrendingUp, Wallet } from 'lucide-react'
+import { formatCurrency } from '../../lib/format'
+import { Card } from '../ui/Card'
+export function InvestmentOverview({ investments }) { const invested = investments.reduce((t, i) => t + Number(i.investedValue || 0), 0); const current = investments.reduce((t, i) => t + Number(i.currentValue || 0), 0); return <div className="grid gap-4 md:grid-cols-3"><Card className="p-5 md:col-span-2"><p className="text-sm text-slate-400">Patrimônio investido</p><h2 className="mt-2 font-heading text-4xl font-bold">{formatCurrency(current)}</h2><p className="mt-3 flex items-center gap-2 text-sm text-emerald-300"><TrendingUp size={16} />{formatCurrency(current - invested)} desde os aportes</p></Card><Card className="p-5"><Wallet className="text-cyan-300" /><p className="mt-5 text-sm text-slate-400">Total aportado</p><strong className="mt-1 block font-heading text-2xl">{formatCurrency(invested)}</strong></Card></div> }
