@@ -1,0 +1,6 @@
+import { useFinanceStore } from '../context/FinanceContext'
+import { Card } from '../components/ui/Card'
+import { PageHeader } from '../components/avyo/PageHeader'
+import { ReserveShield } from '../components/avyo/ReserveShield'
+import { planningNav, RouteNav } from '../components/avyo/RouteNav'
+export function EmergencyReservePage() { const { state } = useFinanceStore(); const target = state.profile.essentialCost * state.profile.monthsGoal; const covered = state.profile.essentialCost ? Math.round(state.profile.reserveAmount / state.profile.essentialCost * 10) / 10 : 0; return <><RouteNav items={planningNav} /><PageHeader eyebrow="Planejamento" title="Reserva de emergência" subtitle="Dinheiro para atravessar imprevistos sem transformar urgência em dívida." /><Card className="p-8"><ReserveShield current={state.profile.reserveAmount} target={target} monthsCovered={covered} /></Card><div className="mt-4 grid gap-4 md:grid-cols-3">{[['Primeiro marco', 'Comece protegendo um mês essencial.'], ['Meta saudável', `${state.profile.monthsGoal} meses dão mais tempo para reorganizar a vida.`], ['Onde deixar', 'Priorize liquidez e baixo risco para acessar quando precisar.']].map(([t, d]) => <Card key={t} className="p-5"><h3 className="font-heading font-semibold">{t}</h3><p className="mt-2 text-sm text-slate-400">{d}</p></Card>)}</div></> }

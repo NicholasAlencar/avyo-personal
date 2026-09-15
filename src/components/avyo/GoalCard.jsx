@@ -1,0 +1,5 @@
+import { formatCurrency, formatDate } from '../../lib/format'
+import { Card } from '../ui/Card'
+import { Progress } from '../ui/Progress'
+
+export function GoalCard({ goal }) { const pct = goal.total > 0 ? goal.saved / goal.total * 100 : 0; const months = Math.max(1, Math.ceil((new Date(`${goal.deadline}T12:00:00`) - new Date()) / 2629800000)); const monthly = Math.max(0, goal.total - goal.saved) / months; return <Card className="p-5"><div className="flex items-start justify-between"><div><h3 className="font-heading text-lg font-semibold">{goal.name}</h3><p className="text-xs text-slate-500">Até {formatDate(goal.deadline)}</p></div><strong className="text-cyan-300">{Math.round(pct)}%</strong></div><div className="mt-5"><Progress value={pct} tone="violet" label={`Progresso da meta ${goal.name}`} /></div><div className="mt-4 flex justify-between text-sm"><span className="text-slate-400">{formatCurrency(goal.saved)} guardados</span><span className="text-slate-300">{formatCurrency(monthly)}/mês</span></div></Card> }
