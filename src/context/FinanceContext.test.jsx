@@ -29,3 +29,20 @@ test('updates and removes records by id', () => {
   act(() => result.current.removeRecord('goals', id))
   expect(result.current.state.goals.some((item) => item.id === id)).toBe(false)
 })
+
+test('updates version 2 settings and nested planning state without replacing collections', () => {
+  const storage = makeStorage()
+  const wrapper = ({ children }) => <FinanceProvider storage={storage}>{children}</FinanceProvider>
+  const { result } = renderHook(() => useFinanceStore(), { wrapper })
+  const transactionIds = result.current.state.transactions.map((item) => item.id)
+
+  act(() => result.current.updateSettings({ aiEnabled: true }))
+  act(() => result.current.updateInvestmentProfile({ tolerance: 3, reasons: ['aposentadoria'] }))
+  act(() => result.current.updatePaydayPlan((plan) => ({ ...plan, todaySpent: 75 })))
+
+  expect(result.current.state.settings).toEqual({ aiEnabled: true, aiDisclosureAccepted: false })
+  expect(result.current.state.investmentProfile).toMatchObject({ tolerance: 3, reasons: ['aposentadoria'] })
+  expect(result.current.state.atePagamento.todaySpent).toBe(75)
+  expect(result.current.state.transactions.map((item) => item.id)).toEqual(transactionIds)
+  expect(JSON.parse(storage.getItem('avyo-personal:v1')).version).toBe(2)
+})
