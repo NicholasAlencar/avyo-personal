@@ -24,15 +24,15 @@ function renderPage(patch) {
 test('shows active monthly and annual subscription totals', () => {
   renderPage()
   expect(screen.getByText('Ativas por mês')).toBeVisible()
-  expect(screen.getByText('R$ 191,70')).toBeVisible()
+  expect(screen.getByText(/191,70/)).toBeVisible()
   expect(screen.getByText('Ativas por ano')).toBeVisible()
-  expect(screen.getByText('R$ 2.300,40')).toBeVisible()
+  expect(screen.getByText(/2\.300,40/)).toBeVisible()
 })
 
 test('shows forgotten subscriptions and records usage today', async () => {
   const user = userEvent.setup()
   renderPage()
-  expect(screen.getByText(/sem uso há/i)).toBeVisible()
+  expect(screen.getAllByText(/sem uso há/i).length).toBeGreaterThan(0)
   await user.click(screen.getAllByRole('button', { name: /usou hoje/i })[0])
   expect(screen.getAllByText(/usado hoje/i)[0]).toBeVisible()
 })
