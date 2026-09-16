@@ -13,7 +13,7 @@ function renderPage() {
 test('keeps AVYO Connect blocked until the real AVYO Empresas backend exists', () => {
   renderPage()
 
-  expect(screen.getByRole('heading', { name: /AVYO Connect/i })).toBeVisible()
+  expect(screen.getByRole('heading', { name: /seus dados, no seu controle/i })).toBeVisible()
   expect(screen.getByText(/integração com o AVYO Empresas ainda não está disponível/i)).toBeVisible()
   expect(screen.getByRole('button', { name: /conectar AVYO Empresas/i })).toBeDisabled()
 })
