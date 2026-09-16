@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { expect, test, vi } from 'vitest'
@@ -52,7 +52,7 @@ test('sends sanitized context and labels fallback mode without persisting chat m
 
   expect(answerPlanner).toHaveBeenCalledWith(expect.not.objectContaining({ profile: expect.anything() }), expect.objectContaining({ signal: expect.anything() }))
   expect(await screen.findByText('modo local')).toBeVisible()
-  expect(screen.getByText('Como organizar o mês?')).toBeVisible()
+  expect(within(screen.getByLabelText('Sua mensagem')).getByText('Como organizar o mês?')).toBeVisible()
   expect(storage.setItem).not.toHaveBeenCalled()
 })
 
