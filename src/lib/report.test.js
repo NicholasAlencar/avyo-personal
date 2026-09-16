@@ -23,7 +23,7 @@ test('builds local narrative and top categories without AI', () => {
     { category: 'Alimentação', amount: 640 },
     { category: 'Saúde', amount: 420 },
   ])
-  expect(JSON.stringify(report)).not.toMatch(/inteligência artificial|IA/i)
+  expect(JSON.stringify(report)).not.toMatch(/inteligência artificial|\bIA\b/i)
 })
 
 test('keeps negative months actionable and deterministic', () => {
