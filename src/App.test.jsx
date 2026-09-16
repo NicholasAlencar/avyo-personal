@@ -17,7 +17,7 @@ function renderRoute(path) {
 
 test.each([
   ['/', /olá, marina/i], ['/movimentacoes/transacoes', /transações/i], ['/planejamento/orcamento', /orçamento/i], ['/investimentos', /investimentos/i],
-  ['/patrimonio', /patrimônio/i], ['/planejador', /seu plano de ação/i], ['/connect', /seus dados, no seu controle/i],
+  ['/patrimonio', /patrimônio/i], ['/planejador', /meu planejador/i], ['/connect', /seus dados, no seu controle/i],
   ['/aprender/escola', /escola avyo/i], ['/configuracoes', /configurações/i],
 ])('renders the page contract for %s', async (path, heading) => {
   renderRoute(path)
