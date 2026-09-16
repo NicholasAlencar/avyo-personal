@@ -19,12 +19,19 @@ function controlledSignal(externalSignal, timeoutMs) {
     timedOut = true
     controller.abort(new DOMException('Timed out', 'TimeoutError'))
   }, timeoutMs)
+  let rejectAbort
+  const aborted = new Promise((_, reject) => { rejectAbort = reject })
+  const rejectOnAbort = () => rejectAbort(controller.signal.reason || new DOMException('Aborted', 'AbortError'))
+  if (controller.signal.aborted) rejectOnAbort()
+  else controller.signal.addEventListener('abort', rejectOnAbort, { once: true })
   return {
     signal: controller.signal,
+    aborted,
     didTimeOut: () => timedOut,
     dispose: () => {
       clearTimeout(timer)
       externalSignal?.removeEventListener('abort', cancel)
+      controller.signal.removeEventListener('abort', rejectOnAbort)
     },
   }
 }
@@ -33,7 +40,7 @@ export function createAiProvider({ invoke, timeoutMs = 15000 }) {
   const call = async (capability, input, options = {}) => {
     const request = controlledSignal(options.signal, timeoutMs)
     try {
-      return await invoke(capability, input, { signal: request.signal })
+      return await Promise.race([invoke(capability, input, { signal: request.signal }), request.aborted])
     } catch (error) {
       if (request.didTimeOut()) throw new AiProviderError('timeout', 'A IA demorou mais que o esperado.', error)
       if (options.signal?.aborted) throw new AiProviderError('cancelled', 'A solicitação foi cancelada.', error)
