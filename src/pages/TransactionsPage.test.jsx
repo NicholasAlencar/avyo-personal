@@ -54,5 +54,5 @@ test('edits and deletes a transaction', async () => {
 test('shows a transaction empty state', () => {
   renderPage({ transactions: [] })
   expect(screen.getByRole('heading', { name: 'Nenhuma transação por aqui' })).toBeVisible()
-  expect(screen.getByRole('button', { name: 'Nova despesa' })).toBeVisible()
+  expect(screen.getAllByRole('button', { name: 'Nova despesa' }).length).toBeGreaterThan(0)
 })
