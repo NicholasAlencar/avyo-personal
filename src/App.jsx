@@ -6,7 +6,9 @@ import { ScrollToTop } from './components/avyo/ScrollToTop'
 import { ToastProvider } from './components/ui/ToastProvider'
 import { FinanceProvider } from './context/FinanceContext'
 import { AiProviderRoot } from './services/ai/AiContext'
+import { createConfiguredBase44AiProvider } from './services/ai/Base44AiProvider'
 
+const configuredAiProvider = createConfiguredBase44AiProvider(import.meta.env.VITE_BASE44_APP_ID) || undefined
 const page = (loader, name) => lazy(() => loader().then((module) => ({ default: module[name] })))
 const HomePage = page(() => import('./pages/HomePage'), 'HomePage')
 const TransactionsPage = page(() => import('./pages/TransactionsPage'), 'TransactionsPage')
@@ -44,5 +46,5 @@ export function AppRoutes() {
 }
 
 export default function App() {
-  return <FinanceProvider><AiProviderRoot><ToastProvider><BrowserRouter><ScrollToTop /><AppLayout><AppRoutes /></AppLayout><OnboardingDialog /></BrowserRouter></ToastProvider></AiProviderRoot></FinanceProvider>
+  return <FinanceProvider><AiProviderRoot provider={configuredAiProvider}><ToastProvider><BrowserRouter><ScrollToTop /><AppLayout><AppRoutes /></AppLayout><OnboardingDialog /></BrowserRouter></ToastProvider></AiProviderRoot></FinanceProvider>
 }
