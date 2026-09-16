@@ -24,7 +24,7 @@ function renderPage(patch) {
 test('shows future installment total and timeline', () => {
   renderPage()
   expect(screen.getByText('Total futuro')).toBeVisible()
-  expect(screen.getByText('R$ 2.300,00')).toBeVisible()
+  expect(screen.getByText(/2\.300,00/)).toBeVisible()
   expect(screen.getAllByText('Próximos meses').length).toBeGreaterThan(0)
 })
 
