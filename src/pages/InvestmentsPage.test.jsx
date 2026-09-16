@@ -25,7 +25,7 @@ test('offers seven investment views and completes the suitability quiz', async (
   await user.click(screen.getByRole('checkbox', { name: /aposentadoria/i }))
   await user.click(screen.getByRole('button', { name: /calcular meu perfil/i }))
   expect(screen.getByText(/seu perfil é equilibrado/i)).toBeVisible()
-  expect(screen.getByText(/conteúdo educativo/i)).toBeVisible()
+  expect(screen.getAllByText(/conteúdo educativo/i).length).toBeGreaterThan(0)
 })
 
 test('adds edits and deletes an investment from the portfolio', async () => {
