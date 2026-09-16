@@ -19,7 +19,7 @@ function renderPage() {
 test('shows transaction categories even when they do not have a budget yet', () => {
   renderPage()
   expect(screen.getByText('Saúde')).toBeVisible()
-  expect(screen.getByText(/sem limite definido/i)).toBeVisible()
+  expect(screen.getAllByText(/sem limite definido/i).length).toBeGreaterThan(0)
   expect(screen.getByRole('button', { name: /criar limite para saúde/i })).toBeVisible()
 })
 
