@@ -4,3 +4,6 @@ dist/
 coverage/
 *.log
 .worktrees/
+.env
+.env.local
+.env.*.local
