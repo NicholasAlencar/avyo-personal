@@ -8,6 +8,7 @@
     "build": "vite build",
     "test": "vitest",
     "test:run": "vitest run",
+    "verify:boundary": "node scripts/verifyBase44Boundary.js",
     "base44:sync": "node scripts/syncBase44Functions.js"
   },
   "dependencies": {
