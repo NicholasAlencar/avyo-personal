@@ -91,7 +91,7 @@ export function OnboardingDialog() {
 
           {step === 1 && <div className="space-y-5">
             <div>
-              <h3 className="font-heading text-xl font-semibold">Organizar vem antes de otimizar</h3>
+              <h3 className="font-heading text-xl font-semibold">Primeiro, clareza; depois, otimização</h3>
               <p className="mt-2 text-sm leading-relaxed text-slate-400">Comece por Transações. Depois o AVYO conecta orçamento, compromissos, reserva, metas e investimentos sem pedir que você configure tudo de uma vez.</p>
             </div>
             <div className="space-y-3">
