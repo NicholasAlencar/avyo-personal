@@ -62,7 +62,7 @@ export function OnboardingDialog() {
         <Progress value={(step + 1) / 3 * 100} label="Progresso do onboarding" />
       </div>
 
-      <AnimatePresence mode="wait" initial={false}>
+      <AnimatePresence initial={false}>
         <motion.section
           key={step}
           initial={reducedMotion ? false : { opacity: 0, x: 18 }}
