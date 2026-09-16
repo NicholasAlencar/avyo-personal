@@ -4,10 +4,12 @@ on:
   push:
     branches:
       - 'task*/**'
+      - 'finalize/**'
   pull_request:
     branches:
       - feature/avyo-v2-base44-ai
       - 'task*/**'
+      - 'finalize/**'
 
 jobs:
   verify:
