@@ -3,10 +3,11 @@ name: Verify AVYO Personal
 on:
   push:
     branches:
-      - task6/movement-flows
+      - 'task*/**'
   pull_request:
     branches:
       - feature/avyo-v2-base44-ai
+      - 'task*/**'
 
 jobs:
   verify:
