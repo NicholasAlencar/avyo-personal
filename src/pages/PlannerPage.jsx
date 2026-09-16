@@ -1,10 +1,43 @@
 import { useMemo } from 'react'
-import { ArrowRight, CheckCircle2, Clock3, Sparkles } from 'lucide-react'
-import { Link } from 'react-router-dom'
 import { useFinanceStore } from '../context/FinanceContext'
 import { aggregateFinance } from '../lib/finance'
-import { buildInsights } from '../lib/insights'
-import { monthKey } from '../lib/format'
+import { formatCurrency, monthKey } from '../lib/format'
 import { Card } from '../components/ui/Card'
 import { PageHeader } from '../components/avyo/PageHeader'
-export function PlannerPage() { const { state } = useFinanceStore(); const items = useMemo(() => buildInsights(aggregateFinance(state, monthKey()), state), [state]); const groups = [{ title: 'Agora', icon: Sparkles, items: items.filter((i) => i.priority >= 80) }, { title: 'Neste mês', icon: Clock3, items: items.filter((i) => i.priority >= 50 && i.priority < 80) }, { title: 'Depois', icon: CheckCircle2, items: items.filter((i) => i.priority < 50) }]; return <><PageHeader eyebrow="Orientação personalizada" title="Seu plano de ação" subtitle="Uma ordem simples para você não precisar resolver tudo ao mesmo tempo." /><div className="grid gap-4 lg:grid-cols-3">{groups.map(({ title, icon: Icon, items: group }) => <Card key={title} className="p-5"><div className="flex items-center gap-3"><div className="grid size-9 place-items-center rounded-xl bg-cyan-400/10 text-cyan-300"><Icon size={17} /></div><h2 className="font-heading text-lg font-semibold">{title}</h2></div><div className="mt-5 space-y-3">{group.length ? group.map((item) => <Link key={item.id} to={item.to || '/'} className="group block rounded-xl bg-white/[0.035] p-4 hover:bg-white/[0.06]"><h3 className="text-sm font-semibold">{item.title}</h3><p className="mt-1 text-xs leading-relaxed text-slate-500">{item.text}</p><span className="mt-3 flex items-center gap-1 text-xs text-cyan-300">Agir agora <ArrowRight size={13} /></span></Link>) : <p className="text-sm text-slate-500">Nenhuma urgência aqui. Continue no seu ritmo.</p>}</div></Card>)}</div></> }
+import { PlannerChat } from '../components/avyo/PlannerChat'
+
+export function PlannerPage() {
+  const { state } = useFinanceStore()
+  const finance = useMemo(() => aggregateFinance(state, monthKey()), [state])
+  const indicators = [
+    { label: 'Receitas', value: finance.income, tone: 'text-emerald-300' },
+    { label: 'Despesas', value: finance.expenses, tone: 'text-rose-300' },
+    { label: 'Resultado', value: finance.result, tone: finance.result >= 0 ? 'text-cyan-200' : 'text-rose-300' },
+    { label: 'Reserva', value: finance.reserve, tone: 'text-violet-200' },
+  ]
+
+  return (
+    <>
+      <PageHeader
+        eyebrow="Orientação personalizada"
+        title="Meu Planejador"
+        subtitle="Converse sobre seu mês com contexto financeiro resumido, sem transformar orientação em recomendação automática."
+      />
+
+      <div className="mb-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="Indicadores para o planejador">
+        {indicators.map((item) => (
+          <Card key={item.label} className="p-4">
+            <p className="text-xs font-medium uppercase tracking-[0.12em] text-slate-500">{item.label}</p>
+            <strong className={`mt-2 block font-heading text-xl ${item.tone}`}>{formatCurrency(item.value)}</strong>
+          </Card>
+        ))}
+      </div>
+
+      <PlannerChat state={state} />
+
+      <p className="mt-4 text-xs leading-relaxed text-slate-500">
+        O Planejador usa cálculos locais como base. Quando a IA opcional estiver habilitada e o compartilhamento aceito, somente agregados financeiros e a mensagem da conversa são enviados; o histórico desta tela não é persistido.
+      </p>
+    </>
+  )
+}
