@@ -46,7 +46,7 @@ test('edits and deletes a subscription', async () => {
   await user.clear(name)
   await user.type(name, 'Spotify Duo')
   await user.click(screen.getByRole('button', { name: 'Salvar' }))
-  expect(screen.getByText('Spotify Duo')).toBeVisible()
+  expect(await screen.findByText('Spotify Duo')).toBeVisible()
 
   await user.click(screen.getByRole('button', { name: /Excluir Spotify Duo/i }))
   expect(screen.getByRole('dialog', { name: 'Excluir assinatura?' })).toBeVisible()
