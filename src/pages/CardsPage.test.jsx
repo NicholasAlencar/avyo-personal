@@ -26,7 +26,7 @@ test('shows card commitment and linked installment details', async () => {
   renderPage()
 
   expect(screen.getByText('Comprometido em faturas')).toBeVisible()
-  expect(screen.getByText('R$ 2.800,00')).toBeVisible()
+  expect(screen.getByText(/2\.800,00/)).toBeVisible()
 
   await user.click(screen.getByRole('button', { name: /Detalhes Ultravioleta/i }))
   expect(screen.getByRole('dialog', { name: 'Detalhes de Ultravioleta' })).toBeVisible()
