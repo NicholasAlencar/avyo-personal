@@ -9,7 +9,10 @@ const functionNames = {
 
 export function createBase44AiProvider(client) {
   return createAiProvider({
-    invoke: (capability, input) => client.functions.invoke(functionNames[capability], input),
+    invoke: async (capability, input, { signal }) => {
+      const response = await client.functions.invoke(functionNames[capability], input, { signal })
+      return response?.data ?? response
+    },
   })
 }
 
