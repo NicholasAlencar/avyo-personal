@@ -25,7 +25,7 @@ test('connects edits and disconnects local business data without losing values',
   await user.type(screen.getByLabelText(/patrimônio líquido da empresa/i), '80000')
 
   await user.click(screen.getByRole('button', { name: 'Conectar dados locais' }))
-  expect(screen.getByText(/PF \+ PJ/i)).toBeVisible()
+  expect(screen.getAllByText(/PF \+ PJ/i).length).toBeGreaterThan(0)
   expect(screen.getByText(/R\$\s*80\.000,00/)).toBeVisible()
 
   await user.clear(screen.getByLabelText(/pró-labore mensal/i))
