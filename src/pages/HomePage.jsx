@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useFinanceStore } from '../context/FinanceContext'
-import { aggregateFinance } from '../lib/finance'
-import { buildInsights, situationPhrase } from '../lib/insights'
+import { buildDashboard } from '../lib/dashboard'
+import { buildInsights } from '../lib/insights'
 import { monthKey } from '../lib/format'
 import { PageHeader } from '../components/avyo/PageHeader'
 import { SituationHero } from '../components/avyo/SituationHero'
@@ -10,20 +10,30 @@ import { PulseCard } from '../components/avyo/PulseCard'
 import { MonthSummary } from '../components/avyo/MonthSummary'
 import { NextActions } from '../components/avyo/NextActions'
 
-function enrichPaydayPlan(plan) {
-  if (!plan) return null
-  const planned = (plan.plannedItems || []).reduce((total, item) => total + Number(item.amount || 0), 0)
-  const remainingFree = Number(plan.balance || 0) - planned - Number(plan.safetyReserve || 0)
-  const days = Math.max(1, Math.ceil((new Date(`${plan.nextPaymentDate}T12:00:00`) - new Date()) / 86400000))
-  return { ...plan, remainingFree, dailyRhythm: remainingFree / days }
-}
-
 export function HomePage() {
   const { state } = useFinanceStore()
-  const finance = useMemo(() => aggregateFinance(state, monthKey()), [state])
-  const plan = useMemo(() => enrichPaydayPlan(state.atePagamento), [state.atePagamento])
-  const stateWithPlan = useMemo(() => ({ ...state, atePagamento: plan }), [state, plan])
-  const insights = useMemo(() => buildInsights(finance, stateWithPlan), [finance, stateWithPlan])
-  const situation = situationPhrase(finance, plan)
-  return <div className="space-y-8"><PageHeader eyebrow="Seu dinheiro, sem complicação" title={`Olá, ${state.profile.name.split(' ')[0] || 'você'}`} subtitle="Veja o que seus números significam e escolha um próximo passo possível." /><SituationHero situation={situation} hasPlan={Boolean(plan)} /><div className="grid gap-4 lg:grid-cols-2"><PulseCard score={finance.healthScore} /><MonthSummary finance={finance} /></div><InsightsFeed insights={insights} /><NextActions insights={insights} /></div>
+  const dashboard = useMemo(() => buildDashboard(state, monthKey()), [state])
+  const stateWithDashboardPlan = useMemo(() => ({
+    ...state,
+    atePagamento: dashboard.situation.hasPlan
+      ? {
+          ...state.atePagamento,
+          remainingFree: dashboard.situation.free,
+          dailyRhythm: dashboard.situation.dailyRhythm,
+        }
+      : null,
+  }), [state, dashboard.situation])
+  const insights = useMemo(() => buildInsights(dashboard.finance, stateWithDashboardPlan), [dashboard.finance, stateWithDashboardPlan])
+
+  return <div className="space-y-8">
+    <PageHeader eyebrow="Seu dinheiro, sem complicação" title={`Olá, ${state.profile.name.split(' ')[0] || 'você'}`} subtitle="Entenda sua situação em poucos segundos e avance por um próximo passo de cada vez." />
+    <SituationHero situation={dashboard.situation} />
+    <div className="grid gap-4 xl:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
+      <PulseCard pulse={dashboard.pulse} />
+      <div className="avyo-card p-5"><div className="flex items-center justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-[.16em] text-slate-500">Leitura rápida</p><h2 className="mt-1 font-heading text-lg font-semibold">O que mudou no seu dinheiro</h2></div><span className="rounded-full bg-cyan-300/[0.07] px-3 py-1 text-xs font-medium text-cyan-200">Atualizado agora</span></div><p className="mt-4 text-sm leading-relaxed text-slate-400">O AVYO cruza fluxo do mês, reserva, cartões e compromissos para destacar o que merece atenção sem esconder seus números.</p></div>
+    </div>
+    <MonthSummary indicators={dashboard.indicators} />
+    <InsightsFeed insights={insights} />
+    <NextActions journeys={dashboard.journeys} />
+  </div>
 }
