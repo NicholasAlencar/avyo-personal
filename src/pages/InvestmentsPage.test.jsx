@@ -40,7 +40,7 @@ test('enforces 100 percent allocation and saves local investment goals', async (
   renderPage()
 
   await user.click(screen.getByRole('tab', { name: 'Distribuição' }))
-  const stable = screen.getByLabelText(/renda fixa/i)
+  const stable = screen.getByRole('spinbutton', { name: /^renda fixa$/i })
   await user.clear(stable)
   await user.type(stable, '40')
   await user.click(screen.getByRole('button', { name: /salvar distribuição/i }))
