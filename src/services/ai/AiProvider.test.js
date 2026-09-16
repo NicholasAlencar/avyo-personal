@@ -24,6 +24,11 @@ test('provider aborts a slow request and returns a stable timeout error', async 
   }))
 })
 
+test('provider times out even when the transport ignores AbortSignal', async () => {
+  const provider = createAiProvider({ invoke: () => new Promise(() => {}), timeoutMs: 5 })
+  await expect(provider.answerPlanner({ question: 'Oi' })).rejects.toEqual(expect.objectContaining({ code: 'timeout' }))
+})
+
 test('provider preserves explicit cancellation as a cancelled error', async () => {
   const controller = new AbortController()
   const invoke = (_capability, _input, { signal }) => new Promise((_resolve, reject) => {

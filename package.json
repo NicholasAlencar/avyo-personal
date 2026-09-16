@@ -7,9 +7,11 @@
     "dev": "vite",
     "build": "vite build",
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "base44:sync": "node scripts/syncBase44Functions.js"
   },
   "dependencies": {
+    "@base44/sdk": "^0.8.48",
     "@tailwindcss/vite": "latest",
     "clsx": "latest",
     "framer-motion": "latest",
@@ -25,6 +27,7 @@
     "@testing-library/react": "latest",
     "@testing-library/user-event": "latest",
     "@vitejs/plugin-react": "latest",
+    "base44": "0.0.50",
     "jsdom": "latest",
     "tailwindcss": "latest",
     "vite": "latest",
