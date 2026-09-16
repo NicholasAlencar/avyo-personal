@@ -1,10 +1,37 @@
-import { ArrowDownRight, ArrowUpRight, Equal } from 'lucide-react'
-import { Bar, BarChart, Cell, ResponsiveContainer, XAxis } from 'recharts'
+import { ArrowDownRight, ArrowUpRight, Landmark, ShieldCheck, WalletCards } from 'lucide-react'
 import { formatCurrency } from '../../lib/format'
 import { Card } from '../ui/Card'
 
-export function MonthSummary({ finance }) {
-  const data = [{ name: 'Entrou', value: finance.income, color: '#34d399' }, { name: 'Saiu', value: finance.expenses, color: '#fb7185' }]
-  const rows = [['Entrou', finance.income, ArrowUpRight, 'text-emerald-300'], ['Saiu', finance.expenses, ArrowDownRight, 'text-rose-300'], ['Sobrou', finance.result, Equal, finance.result >= 0 ? 'text-cyan-300' : 'text-rose-300']]
-  return <Card className="p-5"><h2 className="font-heading text-lg font-semibold">Resumo do mês</h2><div className="mt-5 grid gap-5 sm:grid-cols-[1fr_170px]"><div className="space-y-4">{rows.map(([label, value, Icon, tone]) => <div key={label} className="flex items-center justify-between"><span className="flex items-center gap-2 text-sm text-slate-400"><Icon size={16} className={tone} />{label}</span><strong className={`font-heading ${tone}`}>{formatCurrency(value)}</strong></div>)}</div><div className="h-24" aria-label={`Entrou ${formatCurrency(finance.income)} e saiu ${formatCurrency(finance.expenses)}`}><ResponsiveContainer width="100%" height="100%"><BarChart data={data}><XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 10 }} axisLine={false} tickLine={false} /><Bar dataKey="value" radius={[7, 7, 2, 2]}>{data.map((item) => <Cell key={item.name} fill={item.color} />)}</Bar></BarChart></ResponsiveContainer></div></div></Card>
+const icons = {
+  result: WalletCards,
+  income: ArrowUpRight,
+  expenses: ArrowDownRight,
+  protection: ShieldCheck,
+  netWorth: Landmark,
+}
+
+const tones = {
+  positive: 'text-emerald-300',
+  negative: 'text-rose-300',
+  neutral: 'text-cyan-300',
+}
+
+export function MonthSummary({ indicators }) {
+  return <section aria-label="Indicadores financeiros" className="space-y-3">
+    <div className="flex items-end justify-between gap-4">
+      <div><p className="text-xs font-semibold uppercase tracking-[.16em] text-slate-500">Visão do mês</p><h2 className="mt-1 font-heading text-xl font-semibold">Os cinco números que importam agora</h2></div>
+      <p className="hidden max-w-md text-right text-xs leading-relaxed text-slate-500 md:block">Uma leitura curta para você entender resultado, fluxo, proteção e patrimônio sem abrir várias telas.</p>
+    </div>
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+      {indicators.map((indicator) => {
+        const Icon = icons[indicator.key] || WalletCards
+        const tone = tones[indicator.tone] || tones.neutral
+        return <Card key={indicator.key} className="min-h-40 p-4">
+          <div className="flex items-center justify-between gap-2"><span className="text-sm font-medium text-slate-400">{indicator.label}</span><span className={`grid size-8 place-items-center rounded-lg bg-white/[0.04] ${tone}`}><Icon size={16} /></span></div>
+          <strong className={`mt-5 block font-heading text-xl ${tone}`}>{formatCurrency(indicator.value)}</strong>
+          <p className="mt-2 text-xs leading-relaxed text-slate-500">{indicator.helper}</p>
+        </Card>
+      })}
+    </div>
+  </section>
 }
