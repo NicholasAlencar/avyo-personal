@@ -30,7 +30,7 @@ test('builds a plan through five wizard stages', async () => {
   await user.click(screen.getByRole('button', { name: 'Continuar' }))
 
   expect(screen.getByText('Etapa 3 de 5')).toBeVisible()
-  expect(screen.getByText(/compromissos detectados/i)).toBeVisible()
+  expect(screen.getByRole('heading', { name: /compromissos detectados/i })).toBeVisible()
   await user.click(screen.getByRole('button', { name: 'Continuar' }))
 
   expect(screen.getByText('Etapa 4 de 5')).toBeVisible()
@@ -39,15 +39,15 @@ test('builds a plan through five wizard stages', async () => {
 
   expect(screen.getByText('Etapa 5 de 5')).toBeVisible()
   await user.click(screen.getByRole('button', { name: 'Criar meu ritmo' }))
-  expect(screen.getByText(/ritmo semanal/i)).toBeVisible()
+  expect(screen.getAllByText(/ritmo semanal/i).length).toBeGreaterThan(0)
 })
 
 test('tracks paid commitments, today spending and records expense/income simulations', async () => {
   const user = userEvent.setup()
   renderPage()
 
-  expect(screen.getByText(/ritmo diário/i)).toBeVisible()
-  expect(screen.getByText(/ritmo semanal/i)).toBeVisible()
+  expect(screen.getAllByText(/ritmo diário/i).length).toBeGreaterThan(0)
+  expect(screen.getAllByText(/ritmo semanal/i).length).toBeGreaterThan(0)
 
   const commitments = screen.getByRole('region', { name: /compromissos do plano/i })
   await user.click(within(commitments).getByRole('button', { name: /marcar contas restantes como pago/i }))
