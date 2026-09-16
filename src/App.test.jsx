@@ -16,9 +16,25 @@ function renderRoute(path) {
 }
 
 test.each([
-  ['/', /olá, marina/i], ['/movimentacoes/transacoes', /transações/i], ['/planejamento/orcamento', /orçamento/i], ['/investimentos', /investimentos/i],
-  ['/patrimonio', /patrimônio/i], ['/planejador', /seu plano de ação/i], ['/connect', /seus dados, no seu controle/i],
-  ['/aprender/escola', /escola avyo/i], ['/configuracoes', /configurações/i],
+  ['/', /olá, marina/i],
+  ['/movimentacoes/transacoes', /transações/i],
+  ['/movimentacoes/cartoes', /cartões/i],
+  ['/movimentacoes/parcelamentos', /parcelamentos/i],
+  ['/movimentacoes/assinaturas', /assinaturas/i],
+  ['/planejamento/orcamento', /orçamento/i],
+  ['/planejamento/metas', /metas/i],
+  ['/reserva', /reserva/i],
+  ['/ate-pagamento', /até/i],
+  ['/investimentos', /investimentos/i],
+  ['/patrimonio', /patrimônio/i],
+  ['/patrimonio/calculadora', /calculadora de futuro/i],
+  ['/planejador', /meu planejador/i],
+  ['/connect', /seus dados, no seu controle/i],
+  ['/aprender/escola', /escola avyo/i],
+  ['/aprender/calculadoras', /calculadoras/i],
+  ['/aprender/ajuda', /ajuda/i],
+  ['/relatorio', /relatório do mês/i],
+  ['/configuracoes', /configurações/i],
 ])('renders the page contract for %s', async (path, heading) => {
   renderRoute(path)
   expect(await screen.findByRole('heading', { name: heading }, { timeout: 5000 })).toBeVisible()

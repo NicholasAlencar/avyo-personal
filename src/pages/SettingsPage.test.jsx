@@ -3,6 +3,72 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { expect, test } from 'vitest'
 import { FinanceProvider } from '../context/FinanceContext'
+import { createInitialState } from '../data/seed'
+import { STORAGE_KEY } from '../data/storage'
 import { SettingsPage } from './SettingsPage'
-const storage = () => { const m = new Map(); return { api: { getItem: (k) => m.get(k) ?? null, setItem: (k, v) => m.set(k, String(v)), removeItem: (k) => m.delete(k) }, values: m } }
-test('requires confirmation before clearing local data', async () => { const user = userEvent.setup(); const local = storage(); render(<FinanceProvider storage={local.api}><MemoryRouter><SettingsPage /></MemoryRouter></FinanceProvider>); await user.click(screen.getByRole('button', { name: /apagar tudo/i })); expect(screen.getByRole('dialog', { name: /apagar todos os dados/i })).toBeVisible(); await user.click(screen.getByRole('button', { name: /apagar meus dados/i })); expect(JSON.parse(local.values.get('avyo-personal:v1')).profile.onboarded).toBe(false) })
+
+function storage() {
+  const values = new Map([[STORAGE_KEY, JSON.stringify(createInitialState())]])
+  return {
+    api: {
+      getItem: (key) => values.get(key) ?? null,
+      setItem: (key, value) => values.set(key, String(value)),
+      removeItem: (key) => values.delete(key),
+    },
+    values,
+  }
+}
+
+function renderPage(local = storage()) {
+  return { local, ...render(<FinanceProvider storage={local.api}><MemoryRouter><SettingsPage /></MemoryRouter></FinanceProvider>) }
+}
+
+test('exposes local-data notice, Base44 consent controls and validation version without logout', async () => {
+  const user = userEvent.setup()
+  const { local } = renderPage()
+
+  expect(screen.getByText(/dados somente neste navegador/i)).toBeVisible()
+  expect(screen.getByText(/versão de validação · 0\.2/i)).toBeVisible()
+  expect(screen.queryByRole('button', { name: /sair|logout/i })).not.toBeInTheDocument()
+
+  const enableAi = screen.getByRole('checkbox', { name: /habilitar ia opcional/i })
+  const acceptDisclosure = screen.getByRole('checkbox', { name: /aceito o envio de dados agregados/i })
+  expect(enableAi).not.toBeChecked()
+  expect(acceptDisclosure).not.toBeChecked()
+
+  await user.click(enableAi)
+  await user.click(acceptDisclosure)
+
+  const saved = JSON.parse(local.values.get(STORAGE_KEY))
+  expect(saved.settings.aiEnabled).toBe(true)
+  expect(saved.settings.aiDisclosureAccepted).toBe(true)
+})
+
+test('edits protection, investment and business profile fields locally', async () => {
+  const user = userEvent.setup()
+  const { local } = renderPage()
+
+  await user.clear(screen.getByLabelText('Custo essencial'))
+  await user.type(screen.getByLabelText('Custo essencial'), '4200')
+  await user.clear(screen.getByLabelText('Meta mensal de investimentos'))
+  await user.type(screen.getByLabelText('Meta mensal de investimentos'), '1500')
+  await user.clear(screen.getByLabelText('Patrimônio líquido da empresa'))
+  await user.type(screen.getByLabelText('Patrimônio líquido da empresa'), '95000')
+  await user.click(screen.getByRole('button', { name: /salvar alterações/i }))
+
+  const saved = JSON.parse(local.values.get(STORAGE_KEY))
+  expect(saved.profile.essentialCost).toBe(4200)
+  expect(saved.profile.monthlyInvestmentGoal).toBe(1500)
+  expect(saved.profile.businessNetWorth).toBe(95000)
+  expect(screen.getByText(/perfil de investidor/i)).toBeVisible()
+})
+
+test('requires confirmation before clearing local data', async () => {
+  const user = userEvent.setup()
+  const local = storage()
+  renderPage(local)
+  await user.click(screen.getByRole('button', { name: /apagar tudo/i }))
+  expect(screen.getByRole('dialog', { name: /apagar todos os dados/i })).toBeVisible()
+  await user.click(screen.getByRole('button', { name: /apagar meus dados/i }))
+  expect(JSON.parse(local.values.get(STORAGE_KEY)).profile.onboarded).toBe(false)
+})
