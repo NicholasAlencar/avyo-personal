@@ -1,4 +1,4 @@
-import { Pencil, ShieldCheck } from 'lucide-react'
+import { Pencil } from 'lucide-react'
 import { Progress } from '../ui/Progress'
 import { formatCurrency } from '../../lib/format'
 
@@ -6,12 +6,16 @@ const deposits = [50, 100, 250, 500, 1000]
 
 export function ReserveShield({ current, target, monthsGoal, monthsCovered, onDeposit, onEdit }) {
   const pct = target > 0 ? current / target * 100 : 0
+  const clampedPct = Math.min(100, Math.max(0, pct))
 
   return <div aria-label="Reserva de emergência" className="text-center">
     <div className="relative mx-auto grid size-36 place-items-center">
       <div className="absolute inset-0 rounded-full bg-cyan-400/10 blur-2xl" />
-      <ShieldCheck size={112} strokeWidth={1.15} className="relative text-cyan-300" />
-      <strong className="absolute font-heading text-2xl">{monthsCovered}</strong>
+      <svg role="img" aria-label="Progresso visual da reserva" viewBox="0 0 112 112" className="relative size-28 text-cyan-300">
+        <path d="M56 8c9 8 18 12 28 12v31c0 21-12 35-28 43C40 86 28 72 28 51V20c10 0 19-4 28-12Z" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinejoin="round" opacity=".45" />
+        <path d="M56 8c9 8 18 12 28 12v31c0 21-12 35-28 43C40 86 28 72 28 51V20c10 0 19-4 28-12Z" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinejoin="round" pathLength="100" strokeDasharray={`${clampedPct} 100`} opacity=".9" />
+        <text x="56" y="59" textAnchor="middle" dominantBaseline="middle" className="fill-current font-heading text-[22px] font-bold">{monthsCovered}</text>
+      </svg>
     </div>
     <p className="mt-3 text-xs font-semibold uppercase tracking-[.16em] text-cyan-300">Meta de {monthsGoal} meses</p>
     <h2 className="mt-1 font-heading text-2xl font-bold">{monthsCovered} meses protegidos</h2>

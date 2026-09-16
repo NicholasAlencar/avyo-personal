@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { expect, test } from 'vitest'
@@ -15,6 +15,14 @@ function memoryStorage() {
 function renderPage() {
   return render(<FinanceProvider storage={memoryStorage()}><MemoryRouter><EmergencyReservePage /></MemoryRouter></FinanceProvider>)
 }
+
+test('renders the reserve progress as one accessible visual group', () => {
+  renderPage()
+
+  const shield = screen.getByRole('img', { name: /progresso visual da reserva/i })
+  expect(within(shield).getByText('3.7')).toBeVisible()
+  expect(within(shield).queryByTestId('shield-inner-icon')).not.toBeInTheDocument()
+})
 
 test('adds quick deposits to the reserve from a five-option grid', async () => {
   const user = userEvent.setup()
