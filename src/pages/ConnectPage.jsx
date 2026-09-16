@@ -13,8 +13,8 @@ export function ConnectPage() {
   return (
     <>
       <PageHeader
-        eyebrow="AVYO Empresas"
-        title="AVYO Connect"
+        eyebrow="AVYO Connect"
+        title="Seus dados, no seu controle"
         subtitle="Uma ponte entre sua vida financeira pessoal e sua empresa, liberada somente quando a integração real e segura estiver disponível."
       />
 
