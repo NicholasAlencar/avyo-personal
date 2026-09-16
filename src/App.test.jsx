@@ -27,7 +27,7 @@ test.each([
   ['/ate-pagamento', /até/i],
   ['/investimentos', /investimentos/i],
   ['/patrimonio', /patrimônio/i],
-  ['/patrimonio/calculadora', /calculadora.*patrimônio|patrimônio.*calculadora/i],
+  ['/patrimonio/calculadora', /calculadora de futuro/i],
   ['/planejador', /meu planejador/i],
   ['/connect', /seus dados, no seu controle/i],
   ['/aprender/escola', /escola avyo/i],
