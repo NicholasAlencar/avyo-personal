@@ -17,6 +17,28 @@ test('hydrates edit fields, labels the dialog and focuses the first field', asyn
   await waitFor(() => expect(screen.getByLabelText('Nome')).toHaveFocus())
 })
 
+test('submits edited values instead of the initial record values', async () => {
+  const user = userEvent.setup()
+  const onSave = vi.fn()
+  const initial = { id: 'sub-spotify', name: 'Spotify', monthlyValue: 21.9, category: 'Entretenimento', active: true, lastUsedDate: '2026-09-14' }
+  const fields = [
+    { name: 'name', label: 'Assinatura', required: true },
+    { name: 'monthlyValue', label: 'Valor mensal', type: 'number', min: 0, required: true },
+    { name: 'category', label: 'Categoria', defaultValue: 'Serviços' },
+    { name: 'lastUsedDate', label: 'Último uso', type: 'date' },
+  ]
+  render(<RecordDialog open title="Editar assinatura" initial={initial} fields={fields} onSave={onSave} onClose={vi.fn()} />)
+
+  const name = screen.getByLabelText('Assinatura')
+  await user.clear(name)
+  await user.type(name, 'Spotify Duo')
+  expect(name).toHaveValue('Spotify Duo')
+  await user.click(screen.getByRole('button', { name: 'Salvar' }))
+
+  expect(onSave).toHaveBeenCalledOnce()
+  expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ id: 'sub-spotify', name: 'Spotify Duo', active: true }))
+})
+
 test('closes a record dialog with Escape and restores focus to its trigger', async () => {
   const user = userEvent.setup()
   function Harness() {
