@@ -3,6 +3,7 @@ import { FileText, FileUp, Sparkles, X } from 'lucide-react'
 import { useFinanceStore } from '../../context/FinanceContext'
 import { buildStatementPayload } from '../../lib/aiPayloads'
 import { inferColumnMap, normalizeImportedRows, parseCsv } from '../../lib/csv'
+import { validateImportFile } from '../../lib/importFiles'
 import { useAi } from '../../services/ai/AiContext'
 import { Button } from '../ui/Button'
 import { AiDisclosure } from './AiDisclosure'
@@ -26,24 +27,34 @@ export function CsvImportDialog({ open, onClose, onImport }) {
   if (!open) return null
 
   const reviewCsv = (text) => {
-    const normalized = localCsvRows(text)
-    setRows(normalized.filter((row) => !row.error))
-    setErrors(normalized.filter((row) => row.error).map((row) => row.error))
-    setAiError('')
+    try {
+      const normalized = localCsvRows(text)
+      setRows(normalized.filter((row) => !row.error))
+      setErrors(normalized.filter((row) => row.error).map((row) => row.error))
+      setAiError('')
+    } catch (error) {
+      setRows([])
+      setErrors([])
+      setAiError(error instanceof Error ? error.message : 'Não foi possível ler este CSV.')
+    }
   }
 
   const readCsv = async (event) => {
-    const text = await event.target.files?.[0]?.text()
+    const file = event.target.files?.[0]
+    const validation = validateImportFile(file, 'csv')
+    if (!validation.ok) return setAiError(validation.error)
+    const text = await file.text()
     setSourceText(text || '')
     reviewCsv(text || '')
   }
 
   const readStatement = async (event) => {
     const file = event.target.files?.[0]
-    if (!file) return
+    const validation = validateImportFile(file, 'statement')
+    if (!validation.ok) return setAiError(validation.error)
     const text = await file.text()
     setSourceText(text)
-    setSourceFormat(file.name.toLowerCase().endsWith('.ofx') ? 'ofx' : 'text')
+    setSourceFormat(validation.format)
     setRows([])
     setErrors([])
     setAiError('')
@@ -73,7 +84,9 @@ export function CsvImportDialog({ open, onClose, onImport }) {
 
     <div className="mt-5 grid grid-cols-2 gap-2 rounded-2xl bg-white/[0.035] p-1"><button type="button" onClick={() => { setMode('csv'); setRows([]); setErrors([]); setAiError('') }} className={`min-h-10 rounded-xl px-3 text-sm font-semibold ${mode === 'csv' ? 'bg-cyan-400/10 text-cyan-200' : 'text-slate-400'}`}>CSV local</button><button type="button" onClick={() => { setMode('ai'); setRows([]); setErrors([]); setAiError('') }} className={`min-h-10 rounded-xl px-3 text-sm font-semibold ${mode === 'ai' ? 'bg-violet-400/10 text-violet-200' : 'text-slate-400'}`}>OFX / texto</button></div>
 
-    {mode === 'csv' ? <label className="mt-6 flex cursor-pointer flex-col items-center rounded-2xl border border-dashed border-cyan-300/25 bg-cyan-300/[0.04] p-8 text-center"><FileUp className="text-cyan-300" /><span className="mt-2 text-sm font-semibold">Escolha seu arquivo CSV</span><span className="mt-1 text-xs text-slate-500">Nada sai deste navegador.</span><input type="file" accept=".csv,text/csv" className="sr-only" onChange={readCsv} /></label> : <div className="mt-6 space-y-4"><AiDisclosure accepted={accepted} onAccept={acceptAi} /><label className="flex cursor-pointer items-center gap-3 rounded-2xl border border-dashed border-violet-300/20 bg-violet-300/[0.035] p-4"><FileText className="text-violet-300" /><span className="flex-1 text-sm"><strong className="block text-slate-200">Escolher OFX ou arquivo de texto</strong><span className="text-slate-500">O conteúdo será carregado abaixo para você revisar antes do envio.</span></span><input type="file" accept=".ofx,.txt,text/plain,application/x-ofx" className="sr-only" onChange={readStatement} /></label><label className="block text-sm text-slate-300">Conteúdo do extrato<textarea aria-label="Conteúdo do extrato" value={sourceText} onChange={(e) => setSourceText(e.target.value)} rows={8} placeholder="Cole aqui o conteúdo OFX ou texto do extrato…" className="mt-2 w-full rounded-2xl border border-white/10 bg-[#0c1426] p-3 font-mono text-xs text-slate-200 outline-none focus:border-violet-400/50" /></label><div className="flex flex-wrap gap-2"><Button disabled={!accepted || busy || !sourceText.trim()} onClick={parseWithAi}><Sparkles size={16} />{busy ? 'Interpretando…' : 'Interpretar com IA · Usa Base44'}</Button>{aiError && <Button variant="secondary" onClick={() => { setMode('csv'); reviewCsv(sourceText) }}>Revisar manualmente como CSV</Button>}</div>{aiError && <p role="alert" className="text-sm text-amber-300">{aiError}</p>}</div>}
+    {mode === 'csv' ? <label className="mt-6 flex cursor-pointer flex-col items-center rounded-2xl border border-dashed border-cyan-300/25 bg-cyan-300/[0.04] p-8 text-center"><FileUp className="text-cyan-300" /><span className="mt-2 text-sm font-semibold">Escolha seu arquivo CSV</span><span className="mt-1 text-xs text-slate-500">Nada sai deste navegador.</span><input type="file" accept=".csv,text/csv" className="sr-only" onChange={readCsv} /></label> : <div className="mt-6 space-y-4"><AiDisclosure accepted={accepted} onAccept={acceptAi} /><label className="flex cursor-pointer items-center gap-3 rounded-2xl border border-dashed border-violet-300/20 bg-violet-300/[0.035] p-4"><FileText className="text-violet-300" /><span className="flex-1 text-sm"><strong className="block text-slate-200">Escolher OFX ou arquivo de texto</strong><span className="text-slate-500">O conteúdo será carregado abaixo para você revisar antes do envio.</span></span><input type="file" accept=".ofx,.txt,text/plain,application/x-ofx" className="sr-only" onChange={readStatement} /></label><label className="block text-sm text-slate-300">Conteúdo do extrato<textarea aria-label="Conteúdo do extrato" value={sourceText} onChange={(e) => setSourceText(e.target.value)} rows={8} placeholder="Cole aqui o conteúdo OFX ou texto do extrato…" className="mt-2 w-full rounded-2xl border border-white/10 bg-[#0c1426] p-3 font-mono text-xs text-slate-200 outline-none focus:border-violet-400/50" /></label><div className="flex flex-wrap gap-2"><Button disabled={!accepted || busy || !sourceText.trim()} onClick={parseWithAi}><Sparkles size={16} />{busy ? 'Interpretando…' : 'Interpretar com IA · Usa Base44'}</Button>{aiError && sourceText && <Button variant="secondary" onClick={() => { setMode('csv'); reviewCsv(sourceText) }}>Revisar manualmente como CSV</Button>}</div></div>}
+
+    {aiError && <p role="alert" className="mt-4 text-sm text-amber-300">{aiError}</p>}
 
     {rows.length > 0 && <div className="mt-5 max-h-60 overflow-auto rounded-xl border border-white/[0.06]"><table className="w-full text-left text-sm"><thead className="sticky top-0 bg-[#10192b] text-slate-400"><tr><th className="p-3">Data</th><th>Descrição</th><th>Categoria</th><th className="pr-3 text-right">Valor</th></tr></thead><tbody>{rows.map((row, index) => <tr key={`${row.date}-${row.description}-${index}`} className="border-t border-white/[0.05]"><td className="p-3">{row.date}</td><td>{row.description}</td><td>{row.category}</td><td className="pr-3 text-right">{row.type === 'income' ? '+' : '−'} {Number(row.amount).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td></tr>)}</tbody></table></div>}
     {errors.map((error, index) => <p key={`${error}-${index}`} className="mt-2 text-sm text-amber-300">{typeof error === 'string' ? error : error.error}</p>)}

@@ -23,6 +23,7 @@ function separatorFor(header) {
 export function parseCsv(text) {
   const lines = String(text || '').replace(/^\uFEFF/, '').split(/\r?\n/).filter((line) => line.trim())
   if (lines.length < 2) return []
+  if (lines.length - 1 > MAX_CSV_LINES) throw new Error('O CSV deve ter no máximo 10.000 linhas.')
   const delimiter = separatorFor(lines[0])
   const headers = splitLine(lines[0], delimiter).map((item) => item.toLowerCase().trim())
   return lines.slice(1).map((line, lineIndex) => {
@@ -69,3 +70,4 @@ export function normalizeImportedRows(rows, map) {
     return { date: parseDate(row[map.date]), description, amount: Math.abs(rawAmount), type: explicitType.includes('rece') || explicitType.includes('income') || rawAmount > 0 ? 'income' : 'expense', category: row[map.category] || suggestCategory(description), recurring: false }
   })
 }
+export const MAX_CSV_LINES = 10000

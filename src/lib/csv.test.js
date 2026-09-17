@@ -13,3 +13,8 @@ test('suggests a local category from the description', () => {
   expect(suggestCategory('Uber corrida')).toBe('Transporte')
   expect(suggestCategory('algo desconhecido')).toBe('Outros')
 })
+
+test('rejects CSV input above the 10,000-row limit', () => {
+  const text = ['data,descricao,valor', ...Array.from({ length: 10001 }, () => '2026-09-17,item,-1')].join('\n')
+  expect(() => parseCsv(text)).toThrow(/10\.000 linhas/i)
+})
