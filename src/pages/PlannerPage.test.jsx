@@ -42,7 +42,7 @@ test('shows four local indicators and suggestion chips', () => {
   expect(screen.getByRole('button', { name: /como organizar o mês/i })).toBeVisible()
 })
 
-test('sends sanitized context and labels fallback mode without persisting chat messages', async () => {
+test('uses local mode without invoking an injected remote provider or persisting chat messages', async () => {
   const user = userEvent.setup()
   const answerPlanner = vi.fn().mockRejectedValue(new Error('offline'))
   const { storage } = renderPlanner({ provider: { answerPlanner } })
@@ -50,13 +50,13 @@ test('sends sanitized context and labels fallback mode without persisting chat m
   await user.type(screen.getByLabelText('Pergunte ao AVYO'), 'Como organizar o mês?')
   await user.click(screen.getByRole('button', { name: 'Enviar' }))
 
-  expect(answerPlanner).toHaveBeenCalledWith(expect.not.objectContaining({ profile: expect.anything() }), expect.objectContaining({ signal: expect.anything() }))
+  expect(answerPlanner).not.toHaveBeenCalled()
   expect(await screen.findByText('modo local')).toBeVisible()
   expect(within(screen.getByLabelText('Sua mensagem')).getByText('Como organizar o mês?')).toBeVisible()
   expect(storage.setItem).not.toHaveBeenCalled()
 })
 
-test('uses local mode immediately when AI sharing is disabled', async () => {
+test('uses local mode regardless of legacy AI sharing settings', async () => {
   const user = userEvent.setup()
   const answerPlanner = vi.fn()
   renderPlanner({ provider: { answerPlanner }, storage: createStorage({ aiAccepted: false }) })

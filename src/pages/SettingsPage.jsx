@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Bot, Database, RotateCcw, ShieldCheck, Trash2, UserRound } from 'lucide-react'
+import { Bot, Database, LockKeyhole, RotateCcw, ShieldCheck, Trash2, UserRound } from 'lucide-react'
 import { useFinanceStore } from '../context/FinanceContext'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
@@ -22,7 +22,7 @@ function TextField({ label, value, onChange, type = 'text' }) {
 }
 
 export function SettingsPage() {
-  const { state, updateProfile, updateSettings, resetDemo, clearAll } = useFinanceStore()
+  const { state, updateProfile, resetDemo, clearAll } = useFinanceStore()
   const [profile, setProfile] = useState(state.profile)
   const [confirm, setConfirm] = useState(null)
   const reserveTarget = Math.max(0, Number(profile.essentialCost) || 0) * Math.max(0, Number(profile.monthsGoal) || 0)
@@ -34,12 +34,8 @@ export function SettingsPage() {
     updateProfile(profile)
   }
 
-  const setAiEnabled = (enabled) => {
-    updateSettings(enabled ? { aiEnabled: true } : { aiEnabled: false, aiDisclosureAccepted: false })
-  }
-
   return <>
-    <PageHeader eyebrow="Sua conta local" title="Configurações" subtitle="Ajuste premissas financeiras, privacidade e o uso opcional da IA do AVYO." />
+    <PageHeader eyebrow="Sua conta local" title="Configurações" subtitle="Ajuste premissas financeiras, privacidade e os recursos locais do AVYO." />
 
     <form onSubmit={saveProfile} className="space-y-5">
       <Card className="p-6">
@@ -99,11 +95,10 @@ export function SettingsPage() {
     </form>
 
     <Card className="mt-5 p-6">
-      <div className="flex items-center gap-2"><Bot size={18} className="text-violet-300" /><h2 className="font-heading text-xl font-semibold">IA opcional via Base44</h2></div>
-      <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-500">A IA é usada somente no Planejador, na leitura narrativa do relatório e no parser opcional de extratos. Dados financeiros permanecem locais; quando você autoriza uma função de IA, são enviados apenas os agregados ou textos necessários àquela ação.</p>
-      <div className="mt-5 space-y-4">
-        <label className="flex items-start gap-3 rounded-xl bg-white/[0.035] p-4 text-sm text-slate-300"><input className="mt-1" type="checkbox" checked={state.settings.aiEnabled === true} onChange={(event) => setAiEnabled(event.target.checked)} /><span><strong className="block text-white">Habilitar IA opcional</strong>Libera recursos que podem chamar as três funções permitidas do Base44.</span></label>
-        <label className={`flex items-start gap-3 rounded-xl bg-white/[0.035] p-4 text-sm ${state.settings.aiEnabled ? 'text-slate-300' : 'text-slate-600'}`}><input className="mt-1" type="checkbox" disabled={!state.settings.aiEnabled} checked={state.settings.aiDisclosureAccepted === true} onChange={(event) => updateSettings({ aiDisclosureAccepted: event.target.checked })} /><span><strong className="block text-white">Aceito o envio de dados agregados</strong>Confirma que você entende quando dados resumidos ou o texto enviado à IA podem sair do navegador.</span></label>
+      <div className="flex items-center gap-2"><Bot size={18} className="text-violet-300" /><h2 className="font-heading text-xl font-semibold">IA remota protegida</h2></div>
+      <div className="mt-4 flex items-start gap-3 rounded-xl border border-amber-300/15 bg-amber-300/[0.06] p-4 text-sm text-slate-300">
+        <LockKeyhole className="mt-0.5 shrink-0 text-amber-200" size={18} aria-hidden="true" />
+        <p><strong className="block text-white">Chamadas externas bloqueadas nesta versão</strong>O AVYO usa apenas respostas locais. A integração Base44 será liberada somente depois de existir login e uma proteção autenticada no backend.</p>
       </div>
     </Card>
 

@@ -1,45 +1,26 @@
-import { useMemo, useState } from 'react'
-import { Printer, Sparkles } from 'lucide-react'
+import { useMemo } from 'react'
+import { Printer } from 'lucide-react'
 import { useFinanceStore } from '../context/FinanceContext'
 import { aggregateFinance } from '../lib/finance'
 import { buildInsights } from '../lib/insights'
-import { buildMonthlyReport, normalizeAiReport } from '../lib/report'
-import { buildMonthlyReportPayload } from '../lib/aiPayloads'
+import { buildMonthlyReport } from '../lib/report'
 import { formatCurrency, monthKey } from '../lib/format'
-import { useAi } from '../services/ai/AiContext'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
 import { PageHeader } from '../components/avyo/PageHeader'
 
 export function ReportPage() {
   const { state } = useFinanceStore()
-  const ai = useAi()
   const finance = useMemo(() => aggregateFinance(state, monthKey()), [state])
   const insights = useMemo(() => buildInsights(finance, state), [finance, state])
   const localReport = useMemo(() => buildMonthlyReport(finance, insights), [finance, insights])
-  const [aiNarrative, setAiNarrative] = useState(null)
-  const [aiStatus, setAiStatus] = useState('idle')
-  const narrative = aiNarrative || localReport
-  const aiAccepted = state.settings.aiEnabled === true && state.settings.aiDisclosureAccepted === true
-
-  const generateAiReading = async () => {
-    const controller = new AbortController()
-    setAiStatus('loading')
-    try {
-      const reply = await ai.generateMonthlyReport(buildMonthlyReportPayload(finance, insights), { signal: controller.signal })
-      setAiNarrative(normalizeAiReport(reply, localReport))
-      setAiStatus('success')
-    } catch {
-      setAiNarrative(null)
-      setAiStatus('error')
-    }
-  }
+  const narrative = localReport
 
   return <>
     <PageHeader
       eyebrow="Leitura mensal"
       title="Relatório do mês"
-      subtitle="Os números são calculados localmente. A IA opcional altera somente a leitura narrativa quando você solicitar."
+      subtitle="Os números e a leitura narrativa são calculados localmente neste navegador."
       action={<Button variant="secondary" onClick={() => window.print()}><Printer size={17} />Imprimir</Button>}
     />
 
@@ -61,16 +42,9 @@ export function ReportPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-300">Leitura narrativa</p>
             <h2 className="mt-2 font-heading text-xl font-semibold">Resumo</h2>
           </div>
-          {aiNarrative && <span className="rounded-full bg-violet-400/10 px-3 py-1 text-xs font-semibold text-violet-200">Leitura com IA</span>}
         </div>
         <p data-testid="report-summary" className="mt-4 leading-relaxed text-slate-300">{narrative.summary}</p>
-        <div className="mt-5 flex flex-wrap items-center gap-3">
-          {aiAccepted
-            ? <Button onClick={generateAiReading} disabled={aiStatus === 'loading'}><Sparkles size={17} />{aiStatus === 'loading' ? 'Gerando leitura…' : 'Gerar leitura com IA'}</Button>
-            : <p className="text-sm text-slate-500">Ative a IA opcional nas Configurações e aceite o envio de dados agregados para liberar esta leitura.</p>}
-          {aiNarrative && <Button variant="ghost" onClick={() => { setAiNarrative(null); setAiStatus('idle') }}>Voltar à leitura local</Button>}
-        </div>
-        {aiStatus === 'error' && <p role="alert" className="mt-4 rounded-xl border border-amber-400/20 bg-amber-400/10 p-3 text-sm text-amber-200">A IA está indisponível. A leitura local foi mantida.</p>}
+        <p className="mt-5 text-sm text-slate-500">Leitura 100% local. A IA remota permanece bloqueada até existir acesso autenticado.</p>
       </Card>
 
       <Card className="p-6">

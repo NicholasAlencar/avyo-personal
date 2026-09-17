@@ -23,25 +23,15 @@ function renderPage(local = storage()) {
   return { local, ...render(<FinanceProvider storage={local.api}><MemoryRouter><SettingsPage /></MemoryRouter></FinanceProvider>) }
 }
 
-test('exposes local-data notice, Base44 consent controls and validation version without logout', async () => {
-  const user = userEvent.setup()
-  const { local } = renderPage()
+test('exposes local-data notice, blocks remote AI and has no logout', () => {
+  renderPage()
 
   expect(screen.getByText(/dados somente neste navegador/i)).toBeVisible()
   expect(screen.getByText(/versão de validação · 0\.2/i)).toBeVisible()
   expect(screen.queryByRole('button', { name: /sair|logout/i })).not.toBeInTheDocument()
 
-  const enableAi = screen.getByRole('checkbox', { name: /habilitar ia opcional/i })
-  const acceptDisclosure = screen.getByRole('checkbox', { name: /aceito o envio de dados agregados/i })
-  expect(enableAi).not.toBeChecked()
-  expect(acceptDisclosure).not.toBeChecked()
-
-  await user.click(enableAi)
-  await user.click(acceptDisclosure)
-
-  const saved = JSON.parse(local.values.get(STORAGE_KEY))
-  expect(saved.settings.aiEnabled).toBe(true)
-  expect(saved.settings.aiDisclosureAccepted).toBe(true)
+  expect(screen.getByText(/chamadas externas bloqueadas nesta versão/i)).toBeVisible()
+  expect(screen.queryByRole('checkbox', { name: /habilitar ia|aceito o envio/i })).not.toBeInTheDocument()
 })
 
 test('edits protection, investment and business profile fields locally', async () => {

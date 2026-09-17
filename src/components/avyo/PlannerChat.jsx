@@ -3,7 +3,6 @@ import { Send, Sparkles } from 'lucide-react'
 import { useReducedMotion } from 'framer-motion'
 import { createId } from '../../data/schema'
 import { buildPlannerPayload } from '../../lib/aiPayloads'
-import { useAi } from '../../services/ai/AiContext'
 import { localAiFallback } from '../../services/ai/LocalAiFallback'
 import { Button } from '../ui/Button'
 import { Card } from '../ui/Card'
@@ -12,13 +11,11 @@ import { PlannerMessage } from './PlannerMessage'
 const suggestions = ['Como organizar o mês?', 'O que priorizo agora?', 'Tenho espaço para investir?', 'Como fortalecer minha reserva?']
 
 export function PlannerChat({ state }) {
-  const ai = useAi()
   const [messages, setMessages] = useState([])
   const [draft, setDraft] = useState('')
   const [status, setStatus] = useState('idle')
   const endRef = useRef(null)
   const reducedMotion = useReducedMotion()
-  const aiAllowed = state.settings?.aiEnabled === true && state.settings?.aiDisclosureAccepted === true
 
   useEffect(() => {
     endRef.current?.scrollIntoView?.({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'nearest' })
@@ -36,18 +33,7 @@ export function PlannerChat({ state }) {
     const payload = buildPlannerPayload(state, question, messages)
 
     try {
-      let reply
-      if (aiAllowed) {
-        const controller = new AbortController()
-        try {
-          reply = await ai.answerPlanner(payload, { signal: controller.signal })
-          reply = { ...reply, mode: reply?.mode || 'base44' }
-        } catch {
-          reply = await localAiFallback.answerPlanner(payload)
-        }
-      } else {
-        reply = await localAiFallback.answerPlanner(payload)
-      }
+      const reply = await localAiFallback.answerPlanner(payload)
       setMessages((items) => [...items, {
         id: createId('message'),
         role: 'assistant',
@@ -64,8 +50,8 @@ export function PlannerChat({ state }) {
     <Card className="overflow-hidden">
       <div className="border-b border-white/[0.06] p-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
-          <div><h2 className="font-heading text-xl font-semibold">Converse com o AVYO</h2><p className="mt-1 text-sm text-slate-400">A conversa desta tela não é salva. {aiAllowed ? 'IA Base44 autorizada para contexto financeiro resumido.' : 'O modo local está ativo; nada é enviado.'}</p></div>
-          <span className={`rounded-full px-3 py-1 text-xs font-semibold ${aiAllowed ? 'bg-cyan-400/10 text-cyan-200' : 'bg-amber-400/10 text-amber-200'}`}>{aiAllowed ? 'IA opcional ativa' : '100% local'}</span>
+          <div><h2 className="font-heading text-xl font-semibold">Converse com o AVYO</h2><p className="mt-1 text-sm text-slate-400">A conversa desta tela não é salva. O modo local está ativo; nada é enviado.</p></div>
+          <span className="rounded-full bg-amber-400/10 px-3 py-1 text-xs font-semibold text-amber-200">100% local</span>
         </div>
       </div>
 

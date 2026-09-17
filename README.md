@@ -1,6 +1,6 @@
 # AVYO Personal
 
-Aplicação local-first de finanças pessoais. O AVYO organiza receitas, despesas, cartões, compromissos, orçamento, reserva, metas, investimentos e patrimônio em uma experiência única, com cálculos determinísticos no navegador e IA opcional somente em pontos explícitos.
+Aplicação local-first de finanças pessoais. O AVYO organiza receitas, despesas, cartões, compromissos, orçamento, reserva, metas, investimentos e patrimônio em uma experiência única, com cálculos e respostas locais no navegador.
 
 ## Uso local
 
@@ -27,21 +27,15 @@ Os dados financeiros ficam somente na chave `avyo-personal:v1` do navegador. O a
 - Transações, cartões, parcelamentos, assinaturas, orçamentos, metas, reserva, investimentos, patrimônio, perfil e configurações são persistidos localmente.
 - O histórico do **Meu Planejador** existe apenas durante a sessão da tela e não é salvo no `localStorage`.
 - O AVYO Connect armazena apenas agregados PJ informados pelo próprio usuário; não acessa Open Finance, conta bancária ou contabilidade.
-- A IA fica desabilitada por padrão. Para enviar qualquer contexto às funções opcionais, o usuário precisa habilitar a IA e aceitar explicitamente o envio de dados agregados em **Configurações**.
-- Desabilitar a IA também revoga o consentimento de compartilhamento.
+- A IA remota fica bloqueada nesta versão. Planejador, relatório e interpretação disponível usam somente o fallback local.
+- Nenhum contexto financeiro é enviado às funções Base44 pelo aplicativo publicado enquanto login e proteção autenticada de backend não existirem.
 - Configurações permite restaurar a demonstração ou apagar os dados deste navegador.
 
-## IA opcional via Base44
+## Gateway Base44 reservado para integração autenticada
 
-O Base44 é usado somente pelas funções `ai-planner`, `ai-monthly-report` e `ai-statement-parser`. O site, os dados financeiros e os cálculos principais continuam locais.
+O repositório preserva as funções `ai-planner`, `ai-monthly-report` e `ai-statement-parser` e seus contratos para uma integração futura. O frontend não cria o provider remoto nem aceita um ID Base44 por variável de ambiente nesta versão.
 
-Para habilitar o provider no frontend, copie `.env.example` para `.env.local` e informe o ID da aplicação Base44:
-
-```bash
-VITE_BASE44_APP_ID=seu_app_id
-```
-
-Sem essa variável, o app continua funcional e usa o fallback local. Mesmo com a variável configurada, as chamadas de IA só acontecem quando o usuário habilita a IA e aceita o disclosure em Configurações.
+Liberar essas funções no produto exige login, autorização no backend e proteção contra abuso. Não coloque tokens ou segredos no frontend para contornar essa exigência.
 
 Para autenticar e publicar somente as três funções permitidas:
 
@@ -55,11 +49,7 @@ A fronteira Base44 é verificada por `pnpm verify:boundary`. A checagem impede c
 
 ### O que pode sair do navegador
 
-- **Meu Planejador:** pergunta, últimas mensagens da sessão e agregados financeiros sanitizados.
-- **Relatório:** totais, principais categorias e insights locais; os números exibidos nunca são substituídos pela IA, apenas a narrativa pode mudar.
-- **Importação de extrato:** CSV é processado localmente. OFX/texto pode usar o parser de IA somente após disclosure e consentimento; em falha, a entrada original é preservada para correção manual.
-
-IDs internos, e-mail, nomes pessoais e notas não relacionadas não fazem parte dos payloads financeiros enviados pela camada de IA.
+Nenhum dado financeiro sai do navegador pela interface atual. Meu Planejador, relatório e importação usam comportamento local. Os contratos de payload sanitizado continuam testados para a futura integração autenticada.
 
 ## Importação de CSV
 
@@ -79,7 +69,7 @@ O AVYO Personal inclui:
 - Meu Planejador com chat privado por sessão e fallback local.
 - AVYO Connect em modo local PF + PJ.
 - Escola, Calculadoras e Ajuda.
-- Relatório mensal local com leitura de IA opcional.
+- Relatório mensal com leitura local.
 - Configurações de perfil, proteção, investimentos, empresa, privacidade e dados locais.
 - Onboarding em três etapas com configuração opcional de proteção.
 
