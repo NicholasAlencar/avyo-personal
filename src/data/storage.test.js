@@ -1,6 +1,6 @@
 import { beforeEach, expect, test } from 'vitest'
 import { createInitialState } from './seed'
-import { loadState, saveState, STORAGE_KEY } from './storage'
+import { clearStoredState, CORRUPT_BACKUP_KEY, loadState, saveState, STORAGE_KEY } from './storage'
 
 function makeStorage() {
   const values = new Map()
@@ -57,4 +57,17 @@ test('backs up corrupt content before restoring demonstration data', () => {
   const state = loadState(storage)
   expect(storage.getItem('avyo-personal:corrupt-backup')).toBe('{broken-json')
   expect(state.profile.name).toBe('Marina')
+})
+
+test('clears every AVYO key without removing unrelated origin storage', () => {
+  storage.setItem(STORAGE_KEY, JSON.stringify(createInitialState()))
+  storage.setItem(CORRUPT_BACKUP_KEY, 'financial backup')
+  storage.setItem('unrelated', 'keep me')
+
+  const empty = clearStoredState(storage)
+
+  expect(storage.getItem(CORRUPT_BACKUP_KEY)).toBeNull()
+  expect(JSON.parse(storage.getItem(STORAGE_KEY))).toEqual(empty)
+  expect(empty).toMatchObject({ version: 2, transactions: [], profile: { name: '' } })
+  expect(storage.getItem('unrelated')).toBe('keep me')
 })

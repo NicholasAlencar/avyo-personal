@@ -1,4 +1,4 @@
-import { normalizeState } from './schema'
+import { EMPTY_STATE, normalizeState } from './schema'
 import { createInitialState } from './seed'
 
 export const STORAGE_KEY = 'avyo-personal:v1'
@@ -19,4 +19,12 @@ export function loadState(storage = globalThis.localStorage) {
 
 export function saveState(storage = globalThis.localStorage, state) {
   storage?.setItem(STORAGE_KEY, JSON.stringify(normalizeState(state)))
+}
+
+export function clearStoredState(storage = globalThis.localStorage) {
+  storage?.removeItem(STORAGE_KEY)
+  storage?.removeItem(CORRUPT_BACKUP_KEY)
+  const empty = normalizeState(EMPTY_STATE)
+  storage?.setItem(STORAGE_KEY, JSON.stringify(empty))
+  return empty
 }

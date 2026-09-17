@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react'
-import { createId, EMPTY_STATE, normalizeState } from '../data/schema'
+import { createId, normalizeState } from '../data/schema'
 import { createInitialState } from '../data/seed'
-import { loadState, saveState } from '../data/storage'
+import { clearStoredState, loadState, saveState } from '../data/storage'
 
 const FinanceContext = createContext(null)
 
@@ -37,7 +37,7 @@ export function FinanceProvider({ children, storage = globalThis.localStorage })
   const updatePaydayPlan = useCallback((next) => commit((current) => ({ ...current, atePagamento: typeof next === 'function' ? next(current.atePagamento) : next })), [commit])
   const replaceState = useCallback((next) => commit(next), [commit])
   const resetDemo = useCallback(() => commit(createInitialState()), [commit])
-  const clearAll = useCallback(() => commit(EMPTY_STATE), [commit])
+  const clearAll = useCallback(() => setState(clearStoredState(storage)), [storage])
 
   const value = useMemo(() => ({ state, addRecord, updateRecord, removeRecord, updateProfile, updateSettings, updateInvestmentProfile, updatePaydayPlan, replaceState, resetDemo, clearAll }), [state, addRecord, updateRecord, removeRecord, updateProfile, updateSettings, updateInvestmentProfile, updatePaydayPlan, replaceState, resetDemo, clearAll])
   return <FinanceContext.Provider value={value}>{children}</FinanceContext.Provider>

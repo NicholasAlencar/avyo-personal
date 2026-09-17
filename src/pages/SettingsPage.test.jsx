@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { expect, test } from 'vitest'
 import { FinanceProvider } from '../context/FinanceContext'
 import { createInitialState } from '../data/seed'
-import { STORAGE_KEY } from '../data/storage'
+import { CORRUPT_BACKUP_KEY, STORAGE_KEY } from '../data/storage'
 import { SettingsPage } from './SettingsPage'
 
 function storage() {
@@ -66,9 +66,11 @@ test('edits protection, investment and business profile fields locally', async (
 test('requires confirmation before clearing local data', async () => {
   const user = userEvent.setup()
   const local = storage()
+  local.api.setItem(CORRUPT_BACKUP_KEY, 'old financial data')
   renderPage(local)
   await user.click(screen.getByRole('button', { name: /apagar tudo/i }))
   expect(screen.getByRole('dialog', { name: /apagar todos os dados/i })).toBeVisible()
   await user.click(screen.getByRole('button', { name: /apagar meus dados/i }))
   expect(JSON.parse(local.values.get(STORAGE_KEY)).profile.onboarded).toBe(false)
+  expect(local.values.has(CORRUPT_BACKUP_KEY)).toBe(false)
 })
