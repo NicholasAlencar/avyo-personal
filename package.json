@@ -12,26 +12,26 @@
     "base44:sync": "node scripts/syncBase44Functions.js"
   },
   "dependencies": {
-    "@base44/sdk": "^0.8.48",
-    "@tailwindcss/vite": "latest",
-    "clsx": "latest",
-    "framer-motion": "latest",
-    "lucide-react": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "react-router-dom": "latest",
-    "recharts": "latest",
-    "tailwind-merge": "latest"
+    "@base44/sdk": "0.8.48",
+    "@tailwindcss/vite": "4.3.3",
+    "clsx": "2.1.1",
+    "framer-motion": "13.3.0",
+    "lucide-react": "1.46.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-router-dom": "7.18.3",
+    "recharts": "3.10.1",
+    "tailwind-merge": "3.7.0"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "latest",
-    "@testing-library/react": "latest",
-    "@testing-library/user-event": "latest",
-    "@vitejs/plugin-react": "latest",
+    "@testing-library/jest-dom": "7.0.1",
+    "@testing-library/react": "16.3.3",
+    "@testing-library/user-event": "14.6.7",
+    "@vitejs/plugin-react": "6.1.1",
     "base44": "0.0.50",
-    "jsdom": "latest",
-    "tailwindcss": "latest",
-    "vite": "latest",
-    "vitest": "latest"
+    "jsdom": "30.0.1",
+    "tailwindcss": "4.3.3",
+    "vite": "8.3.0",
+    "vitest": "5.0.1"
   }
 }

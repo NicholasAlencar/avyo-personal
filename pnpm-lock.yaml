@@ -9,62 +9,62 @@ importers:
   .:
     dependencies:
       '@base44/sdk':
-        specifier: ^0.8.48
+        specifier: 0.8.48
         version: 0.8.48(debug@4.4.3)
       '@tailwindcss/vite':
-        specifier: latest
+        specifier: 4.3.3
         version: 4.3.3(vite@8.3.0(jiti@2.7.0))
       clsx:
-        specifier: latest
+        specifier: 2.1.1
         version: 2.1.1
       framer-motion:
-        specifier: latest
+        specifier: 13.3.0
         version: 13.3.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       lucide-react:
-        specifier: latest
+        specifier: 1.46.0
         version: 1.46.0(react@19.3.0)
       react:
-        specifier: latest
+        specifier: 19.3.0
         version: 19.3.0
       react-dom:
-        specifier: latest
+        specifier: 19.3.0
         version: 19.3.0(react@19.3.0)
       react-router-dom:
-        specifier: latest
+        specifier: 7.18.3
         version: 7.18.3(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       recharts:
-        specifier: latest
+        specifier: 3.10.1
         version: 3.10.1(react-dom@19.3.0(react@19.3.0))(react-is@19.3.0)(react@19.3.0)(redux@5.0.1)
       tailwind-merge:
-        specifier: latest
+        specifier: 3.7.0
         version: 3.7.0
     devDependencies:
       '@testing-library/jest-dom':
-        specifier: latest
+        specifier: 7.0.1
         version: 7.0.1(@testing-library/dom@10.4.2)(vitest@5.0.1(jsdom@30.0.1)(vite@8.3.0(jiti@2.7.0)))
       '@testing-library/react':
-        specifier: latest
+        specifier: 16.3.3
         version: 16.3.3(@testing-library/dom@10.4.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@testing-library/user-event':
-        specifier: latest
+        specifier: 14.6.7
         version: 14.6.7(@testing-library/dom@10.4.2)
       '@vitejs/plugin-react':
-        specifier: latest
+        specifier: 6.1.1
         version: 6.1.1(vite@8.3.0(jiti@2.7.0))
       base44:
         specifier: 0.0.50
         version: 0.0.50
       jsdom:
-        specifier: latest
+        specifier: 30.0.1
         version: 30.0.1
       tailwindcss:
-        specifier: latest
+        specifier: 4.3.3
         version: 4.3.3
       vite:
-        specifier: latest
+        specifier: 8.3.0
         version: 8.3.0(jiti@2.7.0)
       vitest:
-        specifier: latest
+        specifier: 5.0.1
         version: 5.0.1(jsdom@30.0.1)(vite@8.3.0(jiti@2.7.0))
 
 packages:
